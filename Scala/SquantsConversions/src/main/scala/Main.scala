@@ -1,9 +1,8 @@
-import squants.time._
+import squants.time.Time
 import squants.time.TimeConversions._
 
-
 class Main {
-  var conceptionTime: Time = -1 nanoseconds
+  var conceptionTime: Time = -1.0 nanoseconds
 }
 
 object Main {
