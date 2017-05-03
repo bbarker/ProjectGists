@@ -1,3 +1,5 @@
+//https://github.com/typelevel/squants/issues/229
+
 import squants.time.Time
 import squants.time.TimeConversions._
 
