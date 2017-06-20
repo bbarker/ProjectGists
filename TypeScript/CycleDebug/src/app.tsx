@@ -1,30 +1,49 @@
 import xs, { Stream } from 'xstream';
 import { VNode, DOMSource } from '@cycle/dom';
 import { StateSource } from 'cycle-onionify';
+import {Response} from "@cycle/http";
 
 import { Sources, Sinks } from './interfaces';
+import {HTTPSource} from "@cycle/http";
 
 export type AppSources = Sources & { onion : StateSource<AppState> };
 export type AppSinks = Sinks & { onion : Stream<Reducer> };
 export type Reducer = (prev : AppState) => AppState;
 export type AppState = {
     count : number;
+    text: string;
 };
 
 export function App(sources : AppSources) : AppSinks
 {
-    const action$ : Stream<Reducer> = intent(sources.DOM);
-    const vdom$ : Stream<VNode> = view(sources.onion.state$);
+    const action$: Stream<Reducer> = intent(sources.DOM);
+    const httpData$: Stream<Reducer> = model(sources.HTTP);
+    const model$ = xs.merge(action$, httpData$);
+    const vdom$: Stream<VNode> = view(sources.onion.state$);
+
+    const request$ = xs.of({
+        url: 'http://example.com/', // GET method by default
+        category: 'hello',
+    });
 
     return {
         DOM: vdom$,
-        onion: action$
+        HTTP: request$,
+        onion: model$
     };
+}
+
+
+function model(HTTP: HTTPSource): Stream<Reducer> {
+    const response$: Stream<Response> = HTTP.select('hello').flatten();
+    return response$.map<Reducer>(resp =>
+        (state) =>({ ...state, text: resp.text })
+    );
 }
 
 function intent(DOM : DOMSource) : Stream<Reducer>
 {
-    const init$ : Stream<Reducer> = xs.of<Reducer>(() => ({ count: 0 }));
+    const init$ : Stream<Reducer> = xs.of<Reducer>(() => ({ text: '', count: 0 }));
 
     const add$ : Stream<Reducer> = DOM.select('.add').events('click')
         .mapTo<Reducer>(state => ({ ...state, count: state.count + 1 }));
@@ -68,6 +87,7 @@ function intent(DOM : DOMSource) : Stream<Reducer>
 
 function view(state$ : Stream<AppState>) : Stream<VNode>
 {
+
     return state$
         .map(s => s.count)
         .map(count =>
