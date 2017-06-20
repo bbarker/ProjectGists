@@ -5,6 +5,7 @@ import {Response} from "@cycle/http";
 
 import { Sources, Sinks } from './interfaces';
 import {HTTPSource} from "@cycle/http";
+import {wrapHTTP, WrappedResponse} from "./util";
 
 export type AppSources = Sources & { onion : StateSource<AppState> };
 export type AppSinks = Sinks & { onion : Stream<Reducer> };
@@ -22,7 +23,7 @@ export function App(sources : AppSources) : AppSinks
     const vdom$: Stream<VNode> = view(sources.onion.state$);
 
     const request$ = xs.of({
-        url: 'http://example.com/', // GET method by default
+        url: 'http://asfsdfsd2342afsd.com/', // GET method by default
         category: 'hello',
     });
 
@@ -35,10 +36,16 @@ export function App(sources : AppSources) : AppSinks
 
 
 function model(HTTP: HTTPSource): Stream<Reducer> {
+    // Unsafe handling:
     const response$: Stream<Response> = HTTP.select('hello').flatten();
     return response$.map<Reducer>(resp =>
         (state) =>({ ...state, text: resp.text })
     );
+    // Safe handling:
+    // const wrappedResp: WrappedResponse = wrapHTTP(HTTP.select('hello'));
+    // return wrappedResp.success$.map<Reducer>(resp =>
+    //     (state) =>({ ...state, text: resp.text })
+    // );
 }
 
 function intent(DOM : DOMSource) : Stream<Reducer>
