@@ -6,8 +6,8 @@ lazy val root = (project in file("."))
   .settings(
     name := "FinalClassError",
     version := "0.1",
-    scalaVersion := dottyVersion,
-    // scalaVersion := "2.11.11",
+    //scalaVersion := dottyVersion,
+    scalaVersion := "2.11.11",
     resolvers ++= Seq(
       "Sonatype OSS Snapshots" at
 	"https://oss.sonatype.org/content/repositories/snapshots",

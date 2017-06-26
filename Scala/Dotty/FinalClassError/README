@@ -1,0 +1,5 @@
+# This is a Scala thing:
+
+http://docs.scala-lang.org/overviews/core/value-classes.html
+
+Value classes may not be extended (they are implicitly final).
