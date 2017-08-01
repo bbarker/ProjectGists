@@ -23,7 +23,7 @@ export function App(sources : AppSources) : AppSinks
     const vdom$: Stream<VNode> = view(sources.onion.state$);
 
     const request$ = xs.of({
-        url: 'http://asfsdfsd2342afsd.com/', // GET method by default
+        url: 'https://arxiv.org/asdf/', // GET method by default
         category: 'hello',
     });
 
@@ -37,15 +37,15 @@ export function App(sources : AppSources) : AppSinks
 
 function model(HTTP: HTTPSource): Stream<Reducer> {
     // Unsafe handling:
-    const response$: Stream<Response> = HTTP.select('hello').flatten();
-    return response$.map<Reducer>(resp =>
-        (state) =>({ ...state, text: resp.text })
-    );
-    // Safe handling:
-    // const wrappedResp: WrappedResponse = wrapHTTP(HTTP.select('hello'));
-    // return wrappedResp.success$.map<Reducer>(resp =>
+    // const response$: Stream<Response> = HTTP.select('hello').flatten();
+    // return response$.map<Reducer>(resp =>
     //     (state) =>({ ...state, text: resp.text })
     // );
+    // Safe handling:
+    const wrappedResp: WrappedResponse = wrapHTTP(HTTP.select('hello'));
+    return wrappedResp.success$.map<Reducer>(resp =>
+        (state) =>({ ...state, text: resp.text })
+    );
 }
 
 function intent(DOM : DOMSource) : Stream<Reducer>
@@ -62,23 +62,23 @@ function intent(DOM : DOMSource) : Stream<Reducer>
     // error in the mapTo stream, and then call replaceError, it doesn't work
     //
     // This works:
-    // const subtract$ : Stream<Reducer> = DOM.select('.subtract').events('click')
-    //     .map( (x) => { throw 'fake intent error'; return x})
-    //     .replaceError(err => {
-    //         console.log(`Error subtract: ${err}`);
-    //         return xs.of(err);
-    //     }).mapTo<Reducer>(state => ({ ...state, count: state.count - 1 }));
-
-    // This does not work:
     const subtract$ : Stream<Reducer> = DOM.select('.subtract').events('click')
-        .mapTo<Reducer>(state => {
-            throw 'fake intent error';
-            return ({ ...state, count: state.count - 1 });
-        })
+        .map( (x) => { throw 'fake intent error'; return x})
         .replaceError(err => {
             console.log(`Error subtract: ${err}`);
             return xs.of(err);
-        });
+        }).mapTo<Reducer>(state => ({ ...state, count: state.count - 1 }));
+
+    // This does not work:
+    // const subtract$ : Stream<Reducer> = DOM.select('.subtract').events('click')
+    //     .mapTo<Reducer>(state => {
+    //         throw 'fake intent error';
+    //         return ({ ...state, count: state.count - 1 });
+    //     })
+    //     .replaceError(err => {
+    //         console.log(`Error subtract: ${err}`);
+    //         return xs.of(err);
+    //     });
 
     // Comment from Andre on gitter:
     // The error happens in a reducer, and the reducer is just a value
