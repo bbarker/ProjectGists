@@ -21,7 +21,7 @@ object MhtmlTodo extends JSApp {
     def toNode(errNode: Node = <div>Error/404</div>): Node = {
       val nodeOuter: Elem = <div>{ rxNode.dropRepeats }</div>
       nodeOuter.child.headOption match {
-        case Some(nd) => nd
+        case Some(nd) => <div class="debug">{ nd }</div>
         case None => errNode
       }
     }
