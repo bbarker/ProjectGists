@@ -19,7 +19,7 @@ object MhtmlTodo extends JSApp {
 
   implicit class RxNode(val rxNode: Rx[Node]) extends AnyVal {
     def toNode(errNode: Node = <div>Error/404</div>): Node = {
-      val nodeOuter = <div>{ rxNode }</div>
+      val nodeOuter: Elem = <div>{ rxNode.dropRepeats }</div>
       nodeOuter.child.headOption match {
         case Some(nd) => nd
         case None => errNode
@@ -78,14 +78,12 @@ object MhtmlTodo extends JSApp {
 
   val hello: Rx[Node] = Rx(<h3>Hello!</h3>)
 
-  val dynamicNode: Rx[Node] = hello.map(hi => <div>{ hi } <h2>{ Router.routePath }</h2> </div>)
+  val dynamicNode: Rx[Node] = hello.map(hi => <div class="hi-div">{ hi } <h2>{ Router.routePath }</h2> </div>)
 
 
-  // There seems to be no problem here, so it is unlikely to be an issue
-  // with toNode
+  // There seems to be no problem here if we only mount View,
+  // so it is unlikely to be an issue with toNode
   val View: Node = dynamicNode.toNode()
-
-
 
 
   def counterNode: xml.Node = {
@@ -98,6 +96,7 @@ object MhtmlTodo extends JSApp {
   }
 
   private def thisRoute(path: Rx[String]): Node = {
+    println("calling thisRoute")
     val (curPathRx, childPathRx) = Router.splitRoute(path)
     val nodeRx: Rx[Node] = curPathRx.map{curPath: String =>
       if (curPath == "counter") counterNode
