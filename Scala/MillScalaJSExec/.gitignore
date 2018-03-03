@@ -1,0 +1,26 @@
+*.class
+*.log
+*~
+
+# sbt specific
+.cache
+.history
+.lib/
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+
+# cbt
+server/public/generated/*
+
+# mill 
+out/
+
+# Scala-IDE specific
+.scala_dependencies
+.worksheet
+.idea
+.idea_modules
