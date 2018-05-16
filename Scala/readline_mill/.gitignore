@@ -1,0 +1,9 @@
+*.class
+*.log
+*~
+.idea
+.idea_modules
+.vscode
+
+# mill output:
+out/

@@ -22,7 +22,7 @@ object Main /*extends JSApp */ {
   //    ()
   //  }
 
-  def main(args: Array[String]): Unit = {
+  def main(): Unit = {
     println("Hello from main")
     mount(dom.document.body, mainDiv)
     ()
