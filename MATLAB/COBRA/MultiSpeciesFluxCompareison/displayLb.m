@@ -1,5 +1,6 @@
 function [outData] = displayLb(modelIn)
 
-joinedColumns = {modelIn.rxnNames(find(modelIn.lb)); num2cell(modelIn.lb(find(modelIn.lb)))}
+rxnsOfIntrest = (modelIn.lb > -1000) & findExcRxns(modelIn);
+joinedColumns = {modelIn.rxnNames(rxnsOfIntrest); num2cell(modelIn.lb(rxnsOfIntrest))};
 outData = horzcat(joinedColumns{:});
 disp(outData);
