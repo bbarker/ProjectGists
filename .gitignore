@@ -32,6 +32,14 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 
+
+### Mill
+out/
+
+### Log files
+
+log/
+
 # Created by .ignore support plugin (hsz.mobi)
 
 #
