@@ -24,6 +24,10 @@ The project can then be opened in IntelliJ.
 In one terminal, start the test server. By default, this
 will run on port 5001:
 
+```
+mill sbh.repeater.run
+
+```
 
 Note that it will lie about the port being used for some reason:
 >Server online at http://localhost:8080/
