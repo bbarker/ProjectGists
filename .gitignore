@@ -32,6 +32,13 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 
+# Haskell
+**/dist/*
+**/dist-newstyle/*
+**/.ghc.environment.*
+**/cabal.project.local
+**/.stack-work/*
+
 
 ### Mill
 out/
