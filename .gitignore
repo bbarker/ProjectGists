@@ -57,6 +57,8 @@ log/
 *.iml
 # Emacs
 *~
+\.\#*
+
 .dotty-ide*
 
 #git cache files

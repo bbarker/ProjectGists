@@ -35,6 +35,11 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - ReaderLensHas
+    - lens >= 4.17
+    - lifted-async >= 0.10.0.3
+    - mtl >= 2.2.2
+    - say  >= 0.1.0.1
+    - stm >= 2.5.0.0
 
 tests:
   ReaderLensHas-test:
