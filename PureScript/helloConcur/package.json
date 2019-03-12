@@ -1,0 +1,29 @@
+{
+  "name": "metajelo-web",
+  "version": "0.0.1",
+  "description": "Display component for Metajelo xml files",
+  "main": "static/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rimraf output && rimraf .pulp-cache",
+    "build": "pulp build -- --censor-lib --strict",
+    "ps": "bower install && pulp build",
+    "prod": "parcel --public-url ./ build static/index.html",
+    "start": "parcel static/index.html",
+    "watch": "parcel watch static/index.html"
+  },
+  "author": "Brandon Barker <brandon.barker@cornell.edu> (https://github.com/bbarker)",
+  "license": "MPL2",
+  "devDependencies": {
+    "bower": "^1.8.6",
+    "parcel-bundler": "^1.9.7",
+    "pulp": "^12.3.1",
+    "purescript": "^0.12.3",
+    "purescript-psa": "^0.7.3",
+    "rimraf": "^2.6.3"
+  },
+  "dependencies": {
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
+  }
+}
