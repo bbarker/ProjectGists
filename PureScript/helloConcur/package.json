@@ -1,7 +1,7 @@
 {
-  "name": "metajelo-web",
+  "name": "helloConcur",
   "version": "0.0.1",
-  "description": "Display component for Metajelo xml files",
+  "description": "Going through the concur docs",
   "main": "static/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -23,7 +23,7 @@
     "rimraf": "^2.6.3"
   },
   "dependencies": {
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0"
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
   }
 }

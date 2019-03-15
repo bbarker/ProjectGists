@@ -1,7 +1,3 @@
-# metajelo-web
-Web tools to display metajelo packages
-* Example Nix + Purescript project
-
 This is a simple example project for setting up Purescript development
 environment using Nix. The basic tooling like Pulp, Purescript compiler and
 psc-package are downloaded from a pinned revision of nixpkgs. This allows us to
