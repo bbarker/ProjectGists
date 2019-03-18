@@ -88,7 +88,7 @@ listCounters3 :: Array Int -> Widget HTML (Array Int)
 listCounters3 initialCounts = andd (map counter initialCounts)
 
 
-{- *** Not working currently
+
 -- This is like Elm's State
 type Form =
   { name :: String
@@ -107,16 +107,17 @@ formWidget form = do
   res <- div'
     [ Name <$> input [ _type "text", value form.name,
                        unsafeTargetValue <$> onChange]
-    , RememberMe <$> input [_type "checkbox", checked form.rememberMe,
-                            onChecked]
-    , Submit <$ button [value "Submit", onClick]
+    , RememberMe (not form.rememberMe) <$
+        input [_type "checkbox", checked form.rememberMe,
+               onChange]
+    , Submit <$ button [onClick] [text "Submit"]
     ]
   -- This is like Elm's update function
   case res of
     Name s -> formWidget (form {name = s})
     RememberMe b -> formWidget (form {rememberMe = b})
     Submit -> pure form
--}
+
 
 
 
@@ -159,6 +160,6 @@ helloListWithDisplay prev = div_ [] do
 -}
 
 main :: Effect Unit
-main = runWidgetInDom "root" $ focusCountWidget
+main = runWidgetInDom "root" $ formWidget
 -- main = runWidgetInDom "root" $ listCounters3 [1, 1, 2, 3, 5]
 -- main = runWidgetInDom "root" helloListWithDisplay
