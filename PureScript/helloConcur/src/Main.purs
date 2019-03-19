@@ -2,13 +2,14 @@ module Main where
 
 import Prelude
 
-import Concur.Core                          (Widget, andd)
+import Concur.Core                          (Widget)
+import Concur.Core.Types                    (andd)
 import Concur.Core.FRP                      (Signal, display, dyn, hold)
 import Concur.React                         (HTML)
 import Concur.React.DOM                     (button, button', div_, div',
                                              input, p', text)
 import Concur.React.Props                   (_type, checked, onChange,
-                                             onChecked, onClick, onFocus,
+                                             onClick, onFocus,
                                              unsafeTargetValue, value)
 import Concur.React.Run                     (runWidgetInDom)
 import Control.Alt                          ((<|>))
