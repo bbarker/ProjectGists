@@ -39,6 +39,8 @@ buildNumber.properties
 **/cabal.project.local
 **/.stack-work/*
 
+# Idris
+*.ibc
 
 ### Mill
 out/
