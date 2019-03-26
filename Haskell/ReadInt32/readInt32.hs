@@ -30,8 +30,8 @@ rep2Key :: String -> Maybe CowRecordKey
 rep2Key strKey = do
   splList <- return $ splitOn "_" (pack strKey)
   (tblName, mrkStr, timeStr) <- head3 splList
-  miInt <- read' (unpack mrkStr)
-  timeOut <- read (unpack timeStr)
+  miInt <- return $ read' (unpack mrkStr)
+  timeOut <- return $ read (unpack timeStr)
   return $ (TableName $ tblName, CowMark miInt, timeOut)
   where
     head3 :: [a] -> Maybe (a, a, a)
