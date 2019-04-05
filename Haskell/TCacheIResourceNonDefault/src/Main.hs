@@ -10,7 +10,7 @@ import           Data.List.Split                (splitOn)
 import           Data.Map                       as DM
 import           Data.Maybe                     (fromJust)
 import           Data.TCache
-import           Data.TCache.DefaultPersistence
+import           Data.TCache.Defs
 import           Data.Text                      (Text)
 import qualified Data.Text                      as Txt
 import           Data.Time
