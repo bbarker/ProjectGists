@@ -1,0 +1,23 @@
+bower_components/
+.cache
+dist/
+testdist/
+/node_modules
+.pulp-cache/
+output/
+generated-docs/
+.npm/
+.psc-package/
+.psc*
+.purs*
+.psa*
+.spago/
+
+app/prod/
+!app/prod/css
+
+# Temp files:
+*~
+\.\#*
+.xdg*
+.fuse_hidden*

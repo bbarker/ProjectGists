@@ -46,7 +46,7 @@ buildNumber.properties
 out/
 
 ### Log files
-
+*.log
 log/
 
 # Created by .ignore support plugin (hsz.mobi)
