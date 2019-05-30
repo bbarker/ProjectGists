@@ -2,7 +2,10 @@ module PureScriptBook.ChapterEleven.ParensBalanced where
 
 import Prelude
 
+import Control.Monad.List.Trans (ListT(..), Step(..), foldl, iterate)
 import Control.Monad.State
+
+import Data.Array (snoc)
 import Data.Foldable
 import Data.String
 
@@ -23,8 +26,37 @@ testParens str =??? takeWhile + traverse_ with State somehow ???
     isParent _ = false
 
 
-{-
 
+
+
+-- takeWhileMRec :: forall m a. MonadRec m =>
+--   (a -> m Boolean) -> ListT m a -> ListT m a
+-- takeWhileMRec p (ListT mstep) = ListT (mstep >>= go)
+--   where
+--   go :: Step a (ListT m a) -> m (Step a (ListT m a))
+--   go Done        = pure Done
+--   go (Skip l)    = pure $ Skip $ takeWhileMRec p <$> l
+--   go (Yield a l) = p a <#> \b ->
+--     if b then Yield a (takeWhileMRec p <$> l) else Done
+
+-- foldlWhileMRec :: forall m a b. => MonadRec m =>
+--   (b -> a -> b) -> (b -> m Boolean) -> ListT m a -> m b
+-- foldlWhileMRec f p list = takeWhileMRec
+
+
+foldlWhileM :: forall m a b. Foldable m => Monad m =>
+  (a -> b -> m b) -> (b -> m Boolean) -> ListT m a -> m b
+foldlWhileM f p (ListT mstep) = ListT (mstep >>= go)
+  where
+    go :: Step a (ListT m a) -> m (Step a (ListT m a))
+    go Done        = pure Done
+    go (Skip l)    = pure $ Skip $ foldlWhileM p <$> l
+    go (Yield a l) = p a <#> \b ->
+      if b then Yield a (foldlWhileM p <$> l) else Done
+
+
+
+{-
 // Author: Asad Saeeduddin (masaeedu)
 
 module Main where
@@ -63,4 +95,5 @@ main :: Effect Unit
 main = logShow $ flip evalState 0 $ result
 -- [0, 1, 2, 3, 4]
 
--}
+
+ -}

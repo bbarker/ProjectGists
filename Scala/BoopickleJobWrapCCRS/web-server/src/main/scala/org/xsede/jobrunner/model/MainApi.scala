@@ -14,17 +14,17 @@ object MainApi {
   sealed trait JobWrap {
     type J
     val job: J
-    val ev: Job[J]
+    //val ev: Job[J]
   }
   object JobWrap {
     def apply[JB](jobIn: JB)(implicit evIn: Job[JB]): JobWrap = new JobWrap {
       type J = JB
       val job: JB = jobIn
-      val ev: Job[JB] = evIn
+      //val ev: Job[JB] = evIn
     }
 
-    def unapply(arg: JobWrap): Option[(arg.J, Job[arg.J])]
-    = Some((arg.job, arg.ev))
+//    def unapply(arg: JobWrap): Option[(arg.J, Job[arg.J])]
+//    = Some((arg.job, arg.ev))
 
     implicit val jwPickler: Pickler[JobWrap] = generatePickler[JobWrap]
 
