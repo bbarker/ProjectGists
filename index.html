@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang=en>
+    <head>
+        <meta charset=utf-8>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://www.google.com">
+
+        <title>Tests for purescript-web-xpath</title>
+        <link rel="stylesheet" href="index.css">
+        <script type="application/javascript" src="index.js" charset="utf-8"></script>
+    </head>
+    <body>
+        <div class= "pure-g">
+            <div class="pure-u-1-1">
+                <div id="metajelo_ui_root"></div>
+            </div>
+        </div>
+        <script type="application/javascript" charset="utf-8">
+          function main()
+	    {
+		console.log("main function");
+		console.log("ajax request to the resource which will require cors enabled");
+		$.ajax
+		({
+		    dataType: "html",
+		    url: "http://google.com",
+		    success: function(data)
+		    {
+			console.log("log response on success");
+			console.log(data);
+		    }
+		});
+	    }
+        </script>
+    </body>
+</html>
