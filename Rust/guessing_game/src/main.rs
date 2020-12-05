@@ -1,6 +1,6 @@
+use rand::Rng;
 use std::cmp::Ordering;
 use std::io;
-use rand::Rng;
 
 fn main() {
     println!("Guess the number!");
@@ -27,8 +27,8 @@ fn main() {
             Ordering::Less => println!("Too small!"),
             Ordering::Greater => println!("Too big!"),
             Ordering::Equal => {
-              println!("You win!");
-              break;
+                println!("You win!");
+                break;
             }
         }
     }
