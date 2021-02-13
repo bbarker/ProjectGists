@@ -1,138 +1,100 @@
+//Hit compile and run to see a sample output.
+//Read values from stdin, do NOT hard code input.
+
+
+// We can iteratively remove each word in the original list
+// from other words, trating the first as a substring. If the length
+// reaches zero, we have found a candidate.
+
+//
+// We need a slightly complex sort, storing the following information
+// in order of highest precedence:
+// First Filter:
+//  The length of the string after all replacements < original word length
+//
+// Then Sort:
+// 1. The original string length
+// 2. The original string (sorted without case)
+// 3. The position of the string in the input
+//
+//
+
 import scala.annotation.tailrec
+import scala.math.Ordered.orderingToOrdered
+import scala.math.Ordering.Implicits._
 
 object Main extends App {
-  // TODO: ideally do with streaming or some other lazy data structure
-  val inLines = io.Source.stdin.getLines.drop(1)
-
-  def enumerateExps(nn: Int, opens: List[Int]): List[String] = {
-    // one way: 1 to 2n -> convert to binary, convert 0 to [ and 1 to ]
-    val binStrs = (1 to 2*nn).map(ki => ki.toBinaryString)
-      .map(dStr => dStr.reverse.padTo(2*nn, '0').reverse)
-    val bracketStrs = binStrs.map(bStr => bStr.replace('0', '[').replace('1', ']'))
-
-
-    def openBracketsAt(opens: List[Int], bracketExpr: String): String = {
-      opens.foldLeft(bracketExpr){(bExp, ix) => bExp.substring(0, ix)
-        + '['  + (if (ix + 1 > 2*nn) "" else bExp.substring(ix + 1))
-      }
+  case class WordInfo(original: String, pos: Int)
+    extends Ordered[WordInfo] {
+    def compare(that: WordInfo): Int = {
+      (-1 * this.original.length, (this.original.toLowerCase, this.pos)) compare
+        (-1 * that.original.length, (that.original.toLowerCase, that.pos))
     }
-    // There may be some redundancy after this, so we will use (possibly not the
-    // most efficient approach: Set)
-    bracketStrs.map(bStr => openBracketsAt(opens, bStr)).toSet.toList
   }
 
-  // Rather than making an actual parser, we can use a "stack"
-  def parseExp(bracketExpr: String): Boolean = {
-    @tailrec
-    def go(exprRemain: String, stack: Int): Boolean = {
-      val newStack = exprRemain.headOption match {
-        case Some(ch) => if (ch == '[') stack + 1 else stack - 1
-        case None => stack
-      }
-      if (newStack < 0) false else go(exprRemain.drop(1), newStack)
+  def replace(sb: StringBuilder, sub: String): StringBuilder = {
+    val startIx = sb.indexOf(sub)
+    val finIx = startIx + sub.length
+    if (startIx >= 0 && finIx >= 0) {
+      sb.replace(startIx, finIx, "")
     }
-    go(bracketExpr, 0)
+    sb
   }
 
-  def readData(lines: Iterator[String]): (Int, List[Int]) = {
-    @tailrec
-    def go(linesLeft: Iterator[String], data: List[(Int, List[Int])]): List[(Int, List[Int])] = {
-      val nLineOpt = linesLeft.nextOption()
-      val vLineOpt = linesLeft.nextOption()
-      (nLineOpt, vLineOpt) match {
-        case (Some(nLine), Some(vLine)) => {
-          val nOpt = nLine.split(' ').map(v => v.toInt).headOption
-          val ks = vLine.split(' ').map(v => v.toInt)
-          nOpt match  {
-            case Some(n) => (n, ks) :: data
-            case None => data
-          }
-        }
-      }
+  val words = io.Source.stdin.getLines.drop(1).map(s => s.trim()).toArray
+  val wordRemovers = words.map(w => new StringBuilder(999, w.toLowerCase))
+  val choppedWords: Array[String] = (0 until words.length).foldLeft(wordRemovers){ (wRems, ix) => {
+    val subWord = words(ix)
+    wRems.zipWithIndex.map{case (sb, sbIx) =>
+      if (ix != sbIx) replace(sb, subWord) else sb
     }
-    go(lines, Nil).reverse
+  }}.map(x => x.toString)
+
+
+  val candidateWords = choppedWords.zip(words.zipWithIndex)
+    .map{case (chopped, (orig, ix)) =>
+      if (chopped == orig.toLowerCase) None else Some(WordInfo(orig, ix))
+    }.flatten
+  candidateWords.sorted.map(wi => wi.original).headOption match {
+    case Some(w) => println(w)
+    case None => println("None")
   }
+
 }
 
 
+// One complication occurs if a word is a substring of another word that is
+// yet a substring of another word. E.g.: "test", "tester", "testerFoo"
+// in this case, if we remove "test" first we have "", "er", "erFoo"
+// so at this point, we must try to remove "er" rather than "tester" to
+// make progress.
+//
+// (Actually this is not a complication, we do not care about this.)
 
+// Another slight complication is if the same string occurs in a word multiple times
+// (at least, depending on the replacement method being used). For this we can create
+// idemReplace (for idempotent replacement)
 
-
-
-
-
-
-
-
-
-
+/* Again, actually, we don't need idemReplace - the amount a word is composed by other words
+  doesn't matter, other than it has to be partly composed */
 /*
-"Square Brackets"
 
-Your solution will be scored against some number of hidden test cases. A sample is provided below.
+    @tailrec
+    def idemReplace(sb: StringBuilder, sub: String): StringBuilder = {
+        val startIx = sb.indexOf(sub)
+        val finIx = startIx + sub.length
+        val sbBefore = sb.toString
+        if (startIx >= 0 && finIx >= 0) {
+            sb.replace(startIx, finIx, "")
+        }
+        val sbAfter = sb.toString
+        if (sbBefore == sbAfter) sb else idemReplace(sb, sub)
+    }
 
-
-You are given:
-
--a positive integer n,
--an integer k, 1<=k<=n,
--an increasing sequence of k integers 0 < s1 < s2 < ... < sk <= 2n.
-
-What is the number of proper bracket expressions of length 2n with opening brackets appearing in positions s1, s2,...,sk?
-
-Illustration
-
-Several PROPER bracket expressions:
-
-[[]][[[]][]]
-[[[][]]][][[]]
-
-An IMPROPER bracket expression:
-
-[[[][]]][]][[]]
-
-There is exactly one proper expression of length 8 with opening brackets in positions 2, 5 and 7.
-
-Task
-
-Write a program which for each data set from a sequence of several data sets:
-
--reads integers n, k and an increasing sequence of k integers from input,
--computes the number of proper bracket expressions of length 2n with opening brackets appearing at positions s1,s2,...,sk,
--writes the result to output.
-
-Input
-
-The first line of the input file contains one integer d, 1 <= d <= 10, which is the number of data sets. The data sets follow. Each data set occupies two lines of the input file. The first line contains two integers n and k separated by single space, 1 <= n <= 19, 1 <= k <= n. The second line contains an increasing sequence of k integers from the interval [1;2n] separated by single spaces.
-
-Output
-
-The i-th line of output should contain one integer - the number of proper bracket expressions of length 2n with opening brackets appearing at positions s1, s2,...,sk.
-
-If there is more than one data set, print the output for other data sets in successive lines(see sample output).
-
-Code evaluation is based on your output, please follow the sample format and do NOT print anything else.
-
-Sample input:
-
-5
-1 1
-1
-1 1
-2
-2 1
-1
-3 1
-2
-4 2
-5 7
-
-Sample Output:
-1
-0
-2
-3
-2
+*/
 
 
- */
+
+
+
+
