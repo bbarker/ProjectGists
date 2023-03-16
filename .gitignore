@@ -63,6 +63,12 @@ log/
 
 .dotty-ide*
 
+.metals
+.scalafmt.conf
+.bsp
+.vscode
+.scala-build
+
 #git cache files
 .cache*
 
