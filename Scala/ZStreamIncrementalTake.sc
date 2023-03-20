@@ -37,13 +37,26 @@ object StreamExample extends ZIOAppDefault {
   ) = customChunks(chunkSizes)(inStream).take(chunkSizes.size)
 
   override val run = {
-    val points = List(1, 2, 5)
+    val points = Set(2, 1, 5).toList.sorted
+    val point1 = Set(2).toList
+    val point0 = Set().toList
 
     val natStream = ZStream.iterate(0)(_ + 1)
 
     // Stream is restarted for each take, as expected
     // ZIO.foreach(points)(point => natStream.chunk.runCollect.debug)
-    takeChunks(points)(natStream).runCollect.debug
+
+    for
+      _ <- ZIO.succeed(println(points)) *> takeChunks(points)(
+        natStream
+      ).runCollect.debug
+      _ <- ZIO.succeed(println(point1)) *> takeChunks(point1)(
+        natStream
+      ).runCollect.debug
+      _ <- ZIO.succeed(println(point0)) *> takeChunks(point0)(
+        natStream
+      ).runCollect.debug
+    yield ()
 
   }
 }
